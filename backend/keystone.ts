@@ -6,6 +6,7 @@ import {
 } from '@keystone-next/keystone/session';
 import 'dotenv/config';
 import { User } from './schemas/User';
+import { Product } from './schemas/Product';
 
 const databaseURL =
   process.env.DATABASE_URL || 'mongodb://localhost/sadfood-keystone';
@@ -41,6 +42,7 @@ export default withAuth(
     lists: createSchema({
       // Schema items go in here
       User,
+      Product,
     }),
     ui: {
       // show the UI only for people who pass this test
@@ -51,7 +53,7 @@ export default withAuth(
     },
     // TODO: Add session values here
     session: withItemData(statelessSessions(sessionConfig), {
-      User: 'id',
+      User: 'id name email',
     }),
   })
 );
