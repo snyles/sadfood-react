@@ -1,6 +1,11 @@
+import { createAuth } from '@keystone-next/auth';
 import { config, createSchema } from '@keystone-next/keystone/schema';
-import { User } from './schemas/User';
+import {
+  withItemData,
+  statelessSessions,
+} from '@keystone-next/keystone/session';
 import 'dotenv/config';
+import { User } from './schemas/User';
 
 const databaseURL =
   process.env.DATABASE_URL || 'mongodb://localhost/sadfood-keystone';
@@ -10,25 +15,43 @@ const sessionConfig = {
   secret: process.env.COOKIE_SECRET,
 };
 
-export default config({
-  server: {
-    cors: {
-      origin: [process.env.FRONTEND_URL],
-      credentials: true,
-    },
+const { withAuth } = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  secretField: 'password',
+  initFirstItem: {
+    fields: ['name', 'email', 'password'],
+    // TODO: Add in initial roles
   },
-  db: {
-    adapter: 'mongoose',
-    url: databaseURL,
-    // TODO Add data seeding here
-  },
-  lists: createSchema({
-    // Schema items go in here
-    User,
-  }),
-  ui: {
-    // TODO: change this for roles
-    isAccessAllowed: () => true,
-  },
-  // TODO: Add session values here
 });
+
+export default withAuth(
+  config({
+    server: {
+      cors: {
+        origin: [process.env.FRONTEND_URL],
+        credentials: true,
+      },
+    },
+    db: {
+      adapter: 'mongoose',
+      url: databaseURL,
+      // TODO Add data seeding here
+    },
+    lists: createSchema({
+      // Schema items go in here
+      User,
+    }),
+    ui: {
+      // show the UI only for people who pass this test
+      isAccessAllowed: ({ session }) => {
+        console.log(session);
+        return !!session?.data;
+      },
+    },
+    // TODO: Add session values here
+    session: withItemData(statelessSessions(sessionConfig), {
+      User: 'id',
+    }),
+  })
+);
