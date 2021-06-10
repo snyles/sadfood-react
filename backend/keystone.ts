@@ -7,6 +7,7 @@ import {
 import 'dotenv/config';
 import { User } from './schemas/User';
 import { Product } from './schemas/Product';
+import { ProductImage } from './schemas/ProductImage';
 
 const databaseURL =
   process.env.DATABASE_URL || 'mongodb://localhost/sadfood-keystone';
@@ -43,13 +44,11 @@ export default withAuth(
       // Schema items go in here
       User,
       Product,
+      ProductImage,
     }),
     ui: {
       // show the UI only for people who pass this test
-      isAccessAllowed: ({ session }) => {
-        console.log(session);
-        return !!session?.data;
-      },
+      isAccessAllowed: ({ session }) => !!session?.data,
     },
     // TODO: Add session values here
     session: withItemData(statelessSessions(sessionConfig), {
