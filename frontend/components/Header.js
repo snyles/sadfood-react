@@ -23,7 +23,7 @@ const HeaderStyles = styled.header`
     display: grid;
     grid-template-columns: auto 1fr;
     justify-content: space-between;
-    align-content: center;
+    align-content: stretch;
   }
   .sub-bar {
     display: grid;
@@ -39,11 +39,11 @@ export default function Header() {
         <Logo>
           <Link href="/">Sad Food Toys</Link>
         </Logo>
+        <Nav />
       </div>
       <div className="sub-bar">
         <p>Search</p>
       </div>
-      <Nav />
     </HeaderStyles>
   );
 }
