@@ -1,6 +1,6 @@
-export default function UpdateProduct() {
+export default function UpdateProduct({ id }) {
   // get existing product
   // get mutation to update product
   // get form to handle updates
-  return <p>Update Product</p>;
+  return <p>Update {id} Product</p>;
 }
